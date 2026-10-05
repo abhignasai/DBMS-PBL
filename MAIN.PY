@@ -2,39 +2,24 @@ import mysql.connector
 from mysql.connector import Error
 
 def get_connection():
+    db_password = "gojosotaru123"
+    
     try:
+        # First connect without specifying database to create it if missing
         connection = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="YOUR_MYSQL_PASSWORD_HERE",  # <-- Put your MySQL password here
-            database="SportsClubDB"
+            password=db_password
         )
-        if connection.is_connected():
-            print("\n Successfully connected to SportsClubDB!\n")
-            return connection
-    except Error as e:
-        print(f"\n Connection Error: {e}\n")
-        return None
-    # Prompt for database credentials
-    host = input("Enter MySQL Host [localhost]: ").strip() or "localhost"
-    user = input("Enter MySQL Username [root]: ").strip() or "root"
-    password = input("Enter MySQL Password: ").strip()
-    database = "SportsClubDB"
-
-    try:
-        connection = mysql.connector.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=database
-        )
-        if connection.is_connected():
-            print("\n Successfully connected to SportsClubDB!\n")
-            return connection
+        cursor = connection.cursor()
+        cursor.execute("CREATE DATABASE IF NOT EXISTS SportsClubDB;")
+        connection.database = "SportsClubDB"
+        
+        print("\n Successfully connected to SportsClubDB!\n")
+        return connection
     except Error as e:
         print(f"\n Error connecting to database: {e}")
         return None
-
 def show_menu():
     print("-" * 40)
     print("      SPORTS CLUB MANAGEMENT MENU")
